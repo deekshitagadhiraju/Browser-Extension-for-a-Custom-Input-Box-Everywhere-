@@ -1,0 +1,40 @@
+{
+  "manifest_version": 2,
+  "name": "Smart Input Box",
+  "version": "1.0.0",
+  "description": "A customizable floating input box that appears when you focus on any input field",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs",
+    "<all_urls>"
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "background": {
+    "scripts": ["background.js"]
+  },
+  
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Smart Input Box"
+  },
+  
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+B"
+      },
+      "description": "Toggle Smart Input Box"
+    }
+  }
+} 
