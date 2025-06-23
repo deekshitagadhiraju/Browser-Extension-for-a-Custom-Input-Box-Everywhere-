@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Input Box</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .header h1 {
+      margin: 0;
+      color: #007acc;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .header p {
+      margin: 5px 0 0 0;
+      color: #666;
+      font-size: 12px;
+    }
+    
+    .section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .section h3 {
+      margin: 0 0 10px 0;
+      color: #333;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    
+    .toggle-label {
+      font-size: 14px;
+      color: #333;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 24px;
+      background: #ccc;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .toggle-switch.active {
+      background: #007acc;
+    }
+    
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+    
+    .toggle-switch.active::after {
+      transform: translateX(26px);
+    }
+    
+    .mode-selector {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .mode-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .mode-btn.active {
+      border-color: #007acc;
+      background: #007acc;
+      color: white;
+    }
+    
+    .mode-btn.advanced {
+      border-color: #ff6b35;
+    }
+    
+    .mode-btn.advanced.active {
+      border-color: #ff6b35;
+      background: #ff6b35;
+    }
+    
+    .api-section {
+      display: none;
+    }
+    
+    .api-section.show {
+      display: block;
+    }
+    
+    .api-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 12px;
+      box-sizing: border-box;
+    }
+    
+    .api-input:focus {
+      outline: none;
+      border-color: #007acc;
+      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+    }
+    
+    .api-info {
+      font-size: 11px;
+      color: #666;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+    
+    .api-link {
+      color: #007acc;
+      text-decoration: none;
+    }
+    
+    .api-link:hover {
+      text-decoration: underline;
+    }
+    
+    .shortcuts {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.4;
+    }
+    
+    .shortcut {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    
+    .key {
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+    
+    .status {
+      text-align: center;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 6px;
+      font-size: 12px;
+      display: none;
+    }
+    
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .status.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    
+    .advanced-features {
+      font-size: 11px;
+      color: #666;
+      margin-top: 10px;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      border-left: 3px solid #ff6b35;
+    }
+    
+    .advanced-features h4 {
+      margin: 0 0 5px 0;
+      color: #ff6b35;
+      font-size: 12px;
+    }
+    
+    .advanced-features ul {
+      margin: 0;
+      padding-left: 15px;
+    }
+    
+    .advanced-features li {
+      margin-bottom: 3px;
+    }
+    
+    .provider-selector {
+      margin-bottom: 10px;
+    }
+    
+    .provider-selector label {
+      display: block;
+      font-size: 12px;
+      color: #333;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    .provider-select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 12px;
+      background: white;
+    }
+    
+    .provider-select:focus {
+      outline: none;
+      border-color: #007acc;
+      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+    }
+    
+    .api-key-section {
+      margin-bottom: 10px;
+    }
+    
+    .api-key-section label {
+      display: block;
+      font-size: 12px;
+      color: #333;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+    <img src="https://img.icons8.com/color/48/000000/idea.png" alt="Logo" style="width: 36px; height: 36px;">
+    <div>
+      <h1 style="margin: 0; color: #5e60ce; font-size: 20px; font-weight: 700; letter-spacing: 1px;">Smart Input Box</h1>
+      <p style="margin: 2px 0 0 0; color: #888; font-size: 12px;">Your productivity booster</p>
+    </div>
+  </div>
+  
+  <div class="section">
+    <h3>Extension Status</h3>
+    <div class="toggle-container">
+      <span class="toggle-label">Enable Extension</span>
+      <div class="toggle-switch" id="enableToggle"></div>
+    </div>
+  </div>
+  
+  <div class="section">
+    <h3>Mode Selection</h3>
+    <div class="mode-selector">
+      <button class="mode-btn active" data-mode="habit">Habit Mode</button>
+      <button class="mode-btn advanced" data-mode="advanced">Advanced Mode</button>
+    </div>
+  </div>
+  
+  <div class="section api-section" id="apiSection">
+    <h3>API Configuration</h3>
+    
+    <div class="provider-selector">
+      <label for="providerSelect">AI Provider:</label>
+      <select id="providerSelect" class="provider-select">
+        <option value="openai">OpenAI (GPT-3.5-turbo)</option>
+        <option value="groq">Groq (Llama3-8b)</option>
+      </select>
+    </div>
+    
+    <div class="api-key-section">
+      <label for="apiKey">API Key:</label>
+      <input type="password" class="api-input" id="apiKey" placeholder="Enter your API key">
+      <button class="copy-api-btn" id="copyApiBtn" title="Copy API Key to clipboard">Copy</button>
+    </div>
+    
+    <div class="api-info">
+      <strong>Required for Advanced Mode:</strong><br>
+      <span id="providerInfo">
+        Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank" class="api-link">OpenAI Platform</a><br>
+        The extension uses GPT-3.5-turbo for AI features
+      </span>
+    </div>
+  </div>
+  
+  <div class="section">
+    <h3>Keyboard Shortcuts</h3>
+    <div class="shortcuts">
+      <div class="shortcut">
+        <span>Toggle Extension</span>
+        <span class="key">Ctrl+Shift+B</span>
+      </div>
+      <div class="shortcut">
+        <span>Show Directly (Advanced)</span>
+        <span class="key">Ctrl+Shift+X</span>
+      </div>
+      <div class="shortcut">
+        <span>Apply & Close</span>
+        <span class="key">Ctrl+Enter</span>
+      </div>
+      <div class="shortcut">
+        <span>Close (no apply)</span>
+        <span class="key">Esc</span>
+      </div>
+      <div class="shortcut">
+        <span>Search/Submit</span>
+        <span class="key">Enter</span>
+      </div>
+      <div class="shortcut">
+        <span>Toggle Mode</span>
+        <span class="key">Ctrl+G</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="advanced-features" id="advancedFeatures" style="display: none;">
+    <h4>Advanced Mode Features</h4>
+    <ul>
+      <li><strong>🎨 CSS Modification:</strong> Ask AI to modify website styling</li>
+      <li><strong>📝 Content Summarization:</strong> Reduce scrolling with AI summaries</li>
+      <li><strong>🤖 AI Suggestions:</strong> Get intelligent recommendations</li>
+      <li><strong>💡 Smart Prompts:</strong> Use natural language to control the website</li>
+    </ul>
+  </div>
+  
+  <div class="status" id="status"></div>
+  
+  <footer style="margin-top: 30px; text-align: right; font-size: 12px; color: #888;">
+    <a href="#" id="helpLink" style="color: #5e60ce; text-decoration: none;">Help</a>
+  </footer>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 
